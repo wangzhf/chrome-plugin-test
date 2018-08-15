@@ -21,4 +21,12 @@ function sendMessageToContentScript(message, callback) {
 
 sendMessageToContentScript({cmd: 'test', value: 'hello, i am popup!'}, function (response) {
   console.log('from content: ' + response);
-})
+});
+
+// 获取tabId
+function doInCurrentTab(tabCallback) {
+  chrome.tabs.query(
+    { currentWindow: true, active: true },
+    function (tabArray) { tabCallback(tabArray[0]); }
+  );
+}

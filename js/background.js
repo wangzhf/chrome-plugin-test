@@ -12,11 +12,18 @@ function returnMsg2Pop(username, password){
 var views = chrome.extension.getViews({type: 'popup'});
 if(views.length > 0) {
   console.log('get popup info from background: ', views[0].location.href);
+  var activeTabId;
+  // 访问popup中的方法
+  views[0].doInCurrentTab( function(tab){ 
+    activeTabId = tab.id;
+    console.log(activeTabId);
+  });
 }
 
 // 向content script主动发送消息
 function sendMessageToContentScript(message, callback) {
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
+    console.log(tabs);
     chrome.tabs.sendMessage(tabs[0].id, message, function(response){
       if(callback) callback(response);
     })
