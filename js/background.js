@@ -22,6 +22,7 @@ if(views.length > 0) {
 
 // 向content script主动发送消息
 function sendMessageToContentScript(message, callback) {
+  // 无法获取到tabs值
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
     console.log(tabs);
     chrome.tabs.sendMessage(tabs[0].id, message, function(response){
@@ -29,7 +30,13 @@ function sendMessageToContentScript(message, callback) {
     })
   })
 }
-
 sendMessageToContentScript({cmd: 'test', value: 'hello, i am background!'}, function (response) {
   console.log('from content script: ' + response);
-})
+});
+
+// 接收消息
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
+  console.log('Received the msg from content script: ');
+  console.log(request, sender, sendResponse);
+  sendResponse('I am background, and received your message: ' + JSON.stringify(request));
+});
